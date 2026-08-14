@@ -1,0 +1,19 @@
+version: "3"
+services:
+  cons-frontend:
+    container_name: cons-frontend
+    ports:
+      - 3000:80
+    build: ./frontend
+  
+  cons-backend:
+    container_name: cons-backend
+    ports:
+      - 8000:8000
+    build: ./backend
+    networks:
+      - todo_network
+
+networks:
+  todo_network:
+    external: true
