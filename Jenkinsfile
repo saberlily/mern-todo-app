@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    enviroment {
+    environment {
         IP_SERVER = '157.245.194.196'
         DEPLOY_PATH = '/root/mern-todo-app'
     }
