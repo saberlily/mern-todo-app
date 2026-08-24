@@ -3,15 +3,14 @@ pipeline {
         stages {
             stage('Hello') {
                 steps {
-                    echo "Chào bạn!"
-                    echo "Pipeline đang chạy..."
+                        withCredentials([
+                        usernamePassword(credentialsId:'github-id', usernameVariable:'USER', passwordVariable:'PASS')
+
+                        ]) 
+                        {
+                        echo " ${USER} - ${PASS} "
+                        } 
                     }
             }
-
-            stage('List files') {
-                steps {
-                    sh "ls -la"
-                    }
-                }
         }
 }
