@@ -22,7 +22,7 @@ function Header() {
                     {
                         token ? (
                             <div className='flex items-center justify-center'>
-                                <p className='mr-5'>Hiiiii, <span className=' text-xl text-blue-800 capitalize'>{user.name}</span></p>
+                                <p className='mr-5'>Welcome, <span className=' text-xl text-blue-800 capitalize'>{user.name}</span></p>
                                 <button onClick={logout} className="logout mr-4">Logout</button>
                             </div>
                         ) : (
