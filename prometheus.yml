@@ -1,7 +1,7 @@
 # Cấu hình toàn cục chung cho tất cả các tiến trình thu thập (scrape)
 global:
-  scrape_interval: 15s      # Tần suất thu thập metric từ các target (mặc định 1 phút, bản cài mẫu thường đặt 15s)
-  evaluation_interval: 15s  # Tần suất đánh giá các quy tắc cảnh báo (alerting/recording rules)
+  scrape_interval: 5s      # Tần suất thu thập metric từ các target (mặc định 1 phút, bản cài mẫu thường đặt 15s)
+  evaluation_interval: 5s  # Tần suất đánh giá các quy tắc cảnh báo (alerting/recording rules)
   # scrape_timeout: 10s   # Thời gian chờ tối đa cho một lần scrape (mặc định 10s)
 
 # Cấu hình Alertmanager để gửi cảnh báo
