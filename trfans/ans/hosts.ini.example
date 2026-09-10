@@ -1,0 +1,9 @@
+[hosts]
+your_vps_ip
+
+[hosts:vars]
+ansible_user=your_vps_user
+ansible_ssh_private_key_file=./ssh-key
+
+mongo_user=your_mongo_user
+mongo_pass=your_mongo_pass

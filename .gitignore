@@ -23,17 +23,14 @@ yarn-debug.log*
 yarn-error.log*
 
 
-# Bỏ qua toàn bộ nội dung bên trong trfans/
-/trfans/*
 
-# Nhưng KHÔNG bỏ qua hai thư mục chứa file đích
+/trfans/*
 !/trfans/ans/
 !/trfans/trf/
-
-# Tiếp tục bỏ qua tất cả mọi thứ bên trong hai thư mục đó
 /trfans/ans/*
 /trfans/trf/*
 
-# Cuối cùng, chỉ định chính xác hai file được phép upload
 !/trfans/ans/ansible.yml
+!/trfans/ans/hosts.ini.example
 !/trfans/trf/main.tf
+!/trfans/trf/terraform.tfvars.example
