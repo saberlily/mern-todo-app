@@ -1,0 +1,68 @@
+- name: Ansible playbook
+  hosts: hosts
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+
+    - name: Install docker
+      apt:
+        name: docker.io
+        state: present
+    
+    - name: Install docker-compose
+      shell: curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      
+    - name: Phan quyen cho docker-compose
+      shell: chmod 700 /usr/local/bin/docker-compose
+
+    - name: Create Docker network
+      community.docker.docker_network:
+        name: todo_network
+        state: present
+    
+    - name: Create Docker container for MongoDB
+      community.docker.docker_container:
+        name: mongodb
+        image: mongo
+        state: started
+        restart_policy: unless-stopped
+        networks:
+          - name: todo_network
+        volumes:
+          - "mongodb_data:/data/db"
+        env:
+          MONGO_INITDB_ROOT_USERNAME: "{{ mongo_user }}"
+          MONGO_INITDB_ROOT_PASSWORD: "{{ mongo_pass }}"
+
+    - name: Clone repository from GitHub
+      ansible.builtin.git:
+        repo: "https://{{ github_token }}@github.com/saberlily/mern-todo-app.git" 
+        #repo: "https://{{ github_user }}:{{ github_token }}@github.com/saberlily/mern-todo-app.git"
+        dest: "/root/mern-todo-app"
+        version: "main"
+      vars:
+        #github_user: "saberlily"
+        github_token: "{{ github_token }}"
+    
+    - name: Update changes from GitHub repository
+      ansible.builtin.git:
+        repo: "https://{{ github_token }}@github.com/saberlily/mern-todo-app.git" 
+        dest: "/root/mern-todo-app"
+        version: "main"   # Hoặc branch bạn muốn deploy (ví dụ: master, develop)
+        update: yes       # Ép Ansible kiểm tra và tải code mới nếu có thay đổi trên Git
+        force: yes        # Ghi đè lên mọi file local bị chỉnh sửa trên VPS để tránh xung đột
+      vars:
+        #github_user: "saberlily"
+        github_token: "{{ github_token }}"
+      
+    - name: Rebuild and restart Docker containers
+      ansible.builtin.shell: |
+        cd /root/mern-todo-app && \
+        docker-compose down && \
+        docker-compose build && \
+        docker-compose up -d
+    
+      
