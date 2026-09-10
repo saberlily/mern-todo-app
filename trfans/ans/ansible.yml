@@ -39,8 +39,7 @@
 
     - name: Clone repository from GitHub
       ansible.builtin.git:
-        repo: "https://{{ github_token }}@github.com/saberlily/mern-todo-app.git" 
-        #repo: "https://{{ github_user }}:{{ github_token }}@github.com/saberlily/mern-todo-app.git"
+        repo: "https://{{ github_token }}@github.com/saberlily/mern-todo-app.git"
         dest: "/root/mern-todo-app"
         version: "main"
       vars:
@@ -51,11 +50,10 @@
       ansible.builtin.git:
         repo: "https://{{ github_token }}@github.com/saberlily/mern-todo-app.git" 
         dest: "/root/mern-todo-app"
-        version: "main"   # Hoặc branch bạn muốn deploy (ví dụ: master, develop)
-        update: yes       # Ép Ansible kiểm tra và tải code mới nếu có thay đổi trên Git
-        force: yes        # Ghi đè lên mọi file local bị chỉnh sửa trên VPS để tránh xung đột
+        version: "main"   
+        update: yes  
+        force: yes
       vars:
-        #github_user: "saberlily"
         github_token: "{{ github_token }}"
       
     - name: Rebuild and restart Docker containers
