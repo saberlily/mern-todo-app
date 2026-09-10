@@ -6,7 +6,7 @@ pipeline {
     }
 
         stages {
-            stage('Hello') {
+            stage('Deploy to VPS') {
                 steps {
                         withCredentials([
                         sshUserPrivateKey(credentialsId:'ssh-key', keyFileVariable:'KEY', usernameVariable:'USER')
