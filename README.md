@@ -53,13 +53,25 @@ cd backend
 yarn install
 ```
 
-Create a `.env` file in `backend/` with at least:
+Copy `backend/.env.example` to `backend/.env` and fill in the values:
 
 ```
-PORT=8000
 MONGO_URI=<your-mongodb-connection-string>
+GMAIL_USERNAME=<gmail-address-used-to-send-emails>
+GMAIL_PASSWORD=<gmail-app-password>
+PORT=8000
 JWT_SECRET=<your-jwt-secret>
 ```
+
+`MONGO_URI` depends on where the backend runs:
+
+| Environment | Host in the URI | Notes |
+|---|---|---|
+| Local | `localhost` | MongoDB running directly on your machine |
+| Docker | `mongodb` (service/container name) | Backend and MongoDB share a Docker network |
+| VPS | `<vps-ip>` | MongoDB's port is published publicly, so the password **must be URL-encoded** (special characters like `@ : / ? # %` will otherwise break the connection string) |
+
+`GMAIL_USERNAME`/`GMAIL_PASSWORD` are used by Nodemailer for task reminder emails and the forgot-password flow — use a [Gmail App Password](https://support.google.com/accounts/answer/185833), not your regular account password.
 
 Run the backend:
 
