@@ -22,5 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-#ansible
-/trfans/ans/ssh-key
+
+/trfans/**/
+/trfans/**/*
+!/trfans/ans/ansible.yml
+!/trfans/trf/main.tf
