@@ -42,8 +42,7 @@
         repo: "https://{{ github_token }}@github.com/saberlily/mern-todo-app.git"
         dest: "/root/mern-todo-app"
         version: "main"
-      vars:
-        github_token: "{{ github_token }}"
+      no_log: true
     
     - name: Update changes from GitHub repository
       ansible.builtin.git:
@@ -52,8 +51,7 @@
         version: "main"   
         update: yes  
         force: yes
-      vars:
-        github_token: "{{ github_token }}"
+      no_log: true
       
     - name: Rebuild and restart Docker containers
       ansible.builtin.shell: |
