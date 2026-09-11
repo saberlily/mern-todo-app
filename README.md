@@ -1,42 +1,20 @@
-# MERN Todo App
+# MERN Todo App — DevOps Pipeline
 
-A full-stack Todo application built with the MERN stack (MongoDB, Express, React, Node.js), containerized with Docker, deployed via Jenkins CI/CD, and monitored with Prometheus.
+A DevOps-focused project using a MERN Todo app as the demo workload to practice a full deployment pipeline: **containerization** (Docker/Docker Compose), **infrastructure as code** (Terraform + Ansible), **CI/CD** (GitHub Actions and Jenkins), and **monitoring** (Prometheus + Grafana) on a cloud VPS.
 
 ## Features
 
-- User registration, login (JWT auth), and forgot-password flow (email via Nodemailer)
-- Create, update, delete, and track todo tasks
-- Scheduled background jobs (`backend/scheduler`)
 - Dockerized frontend and backend, orchestrated with Docker Compose
-- CI/CD pipeline via Jenkins (deploys over SSH to a remote server)
-- Metrics collection via Prometheus (app + MongoDB exporter)
+- Infrastructure provisioned and configured as code with Terraform + Ansible
+- Dual CI/CD pipelines (GitHub Actions and Jenkins), both auto-deploying over SSH on push
+- Metrics collection and dashboards via Prometheus + Grafana (app, MongoDB, and host metrics)
+- The app itself: user auth (JWT, forgot-password via email), and CRUD todo tasks with scheduled background jobs
 
 ## Tech Stack
 
+**DevOps:** Docker, Docker Compose, Terraform, Ansible, GitHub Actions, Jenkins, Prometheus, Grafana
 **Frontend:** React 18, React Router, MUI, Tailwind CSS, Axios
 **Backend:** Node.js, Express, Mongoose (MongoDB), JWT, bcrypt, Nodemailer
-**DevOps:** Docker, Docker Compose, Jenkins, Prometheus
-
-## Project Structure
-
-```
-mern-todo-app/
-├── backend/
-│   ├── controllers/     # Request handlers (task, user, forgot-password)
-│   ├── middleware/       # Express middleware
-│   ├── models/           # Mongoose schemas (task, user)
-│   ├── routes/           # API routes
-│   ├── scheduler/        # Scheduled/cron jobs
-│   ├── server.js         # App entry point
-│   └── Dockerfile
-├── frontend/
-│   ├── src/               # React app source
-│   ├── public/
-│   └── Dockerfile
-├── docker-compose.yml     # Frontend + backend services
-├── prometheus.yml         # Prometheus scrape configuration
-└── Jenkinsfile             # CI/CD pipeline definition
-```
 
 ## Getting Started
 
@@ -109,7 +87,32 @@ Base path: `/api`
 
 ## CI/CD
 
-The `Jenkinsfile` defines a pipeline that connects to the deployment server over SSH and runs `git pull`, `docker-compose down`, `docker-compose build`, and `docker-compose up -d` to redeploy the app.
+Two alternative pipelines can deploy the app — pick one, both do the same SSH + `docker-compose` redeploy to the VPS.
+
+### GitHub Actions (`.github/workflows/main.yml`)
+
+Runs automatically on every push to `main`. Requires these set in the repo's Settings → Secrets and variables → Actions:
+- `VPS_HOST`, `VPS_KEY` (secrets) — VPS address and SSH private key
+- `VPS_USER` (variable) — SSH username
+
+### Jenkins (`Jenkinsfile`)
+
+The `Jenkinsfile` itself has no trigger declared — the push-to-build behavior is configured on the Jenkins job instead, so it fires automatically on pushes to GitHub, same as the Actions workflow.
+
+**One-time setup:**
+
+1. Create a Pipeline job in Jenkins pointing at this repo ("Pipeline script from SCM") so it picks up the `Jenkinsfile`.
+2. In the job's configuration, under Build Triggers, check **"GitHub hook trigger for GITScm polling"**.
+3. Add the SSH credential: **Manage Jenkins → Credentials → System → Global credentials → Add Credentials** — kind "SSH Username with private key", ID `ssh-key`, username the VPS login user, and the private key paired with the VPS's `authorized_keys`.
+4. Add a webhook on the GitHub repo: **Settings → Webhooks → Add webhook**, Payload URL `http://<jenkins-host>/github-webhook/`, content type `application/json`, event "Just the push event".
+
+Once set up, every push to GitHub notifies Jenkins and triggers the pipeline.
+
+## Infrastructure as Code (Terraform + Ansible)
+
+The VPS is provisioned and configured with IaC, under `trfans/`: **Terraform** (`trf/`) creates the cloud server, and **Ansible** (`ans/`) installs Docker, starts MongoDB, and deploys the app onto it. Both are run via Docker locally, so no local install is needed — just copy the `*.example` config files in each folder, fill in your own values, and run Terraform then Ansible against them.
+
+> Note: this demo is set up to provision a DigitalOcean droplet.
 
 ## Monitoring (Prometheus + Grafana)
 
